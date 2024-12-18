@@ -198,6 +198,11 @@ function EditTagsModal({
               </Row>
             ))}
           </Stack>
+          <Col className="d-md-flex justify-content-md-end mt-3">
+            <Button className=" " onClick={handleClose}>
+              Close
+            </Button>
+          </Col>
         </Form>
       </Modal.Body>
     </Modal>
