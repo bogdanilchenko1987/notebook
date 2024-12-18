@@ -8,18 +8,21 @@ import { v4 as uuidV4 } from "uuid";
 type NoteFormProps = {
   onSubmit: (data: NoteData) => void;
   onAddTag: (tag: Tag) => void;
-  avalibleTags: Tag[];
-};
+  availableTags: Tag[];
+} & Partial<NoteData>;
 
-export function NoteForm({ onSubmit, onAddTag, avalibleTags }: NoteFormProps) {
+export function NoteForm({
+  onSubmit,
+  onAddTag,
+  availableTags,
+  title = "",
+  markdown = "",
+  tags = [],
+}: NoteFormProps) {
   const titleRef = useRef<HTMLInputElement>(null);
   const markdownRef = useRef<HTMLTextAreaElement>(null);
-  const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
+  const [selectedTags, setSelectedTags] = useState<Tag[]>(tags);
   const navigate = useNavigate();
-
-  const tagsValue = selectedTags.map((tag) => {
-    return { label: tag.label, value: tag.id };
-  });
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -40,7 +43,7 @@ export function NoteForm({ onSubmit, onAddTag, avalibleTags }: NoteFormProps) {
           <Col>
             <Form.Group controlId="title">
               <Form.Label>Title</Form.Label>
-              <Form.Control required ref={titleRef} />
+              <Form.Control required ref={titleRef} defaultValue={title} />
             </Form.Group>
           </Col>
 
@@ -53,25 +56,33 @@ export function NoteForm({ onSubmit, onAddTag, avalibleTags }: NoteFormProps) {
                   onAddTag(newTag);
                   setSelectedTags((prev) => [...prev, newTag]);
                 }}
-                value={tagsValue}
-                isMulti
-                options={avalibleTags.map((tag) => {
+                value={selectedTags.map((tag) => {
                   return { label: tag.label, value: tag.id };
                 })}
-                onChange={(tags) =>
+                options={availableTags.map((tag) => {
+                  return { label: tag.label, value: tag.id };
+                })}
+                onChange={(tags) => {
                   setSelectedTags(
                     tags.map((tag) => {
                       return { label: tag.label, id: tag.value };
                     })
-                  )
-                }
+                  );
+                }}
+                isMulti
               />
             </Form.Group>
           </Col>
         </Row>
         <Form.Group controlId="markdown">
           <Form.Label>Body</Form.Label>
-          <Form.Control ref={markdownRef} required as="textarea" rows={15} />
+          <Form.Control
+            ref={markdownRef}
+            required
+            as="textarea"
+            rows={15}
+            defaultValue={markdown}
+          />
         </Form.Group>
         <Stack direction="horizontal" gap={2} className="justify-content-end">
           <Button type="submit" variant="primary">
