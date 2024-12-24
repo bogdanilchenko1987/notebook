@@ -9,6 +9,7 @@ import { NoteList } from "./NoteList";
 import { NoteLayout } from "./NoteLayout";
 import { Note } from "./Note";
 import { EditNote } from "./EditNote";
+import data from "./data";
 
 export type Note = {
   id: string;
@@ -36,8 +37,11 @@ export type Tag = {
 };
 
 function App() {
-  const [notes, setNotes] = useLocalStorage<RawNote[]>("NOTES", []);
-  const [tags, setTags] = useLocalStorage<Tag[]>("TAGS", []);
+  const [notes, setNotes] = useLocalStorage<RawNote[]>(
+    "NOTES",
+    data.initialNotes
+  );
+  const [tags, setTags] = useLocalStorage<Tag[]>("TAGS", data.initialTags);
 
   const notesWithTags = useMemo(() => {
     return notes.map((note) => {
